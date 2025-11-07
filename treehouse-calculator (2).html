@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treehouse Therapies Compensation Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px 30px 15px;
+            text-align: center;
+            border-bottom: 3px solid #2e7d32;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            color: #2e7d32;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: #2e7d32;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #66bb6a;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+        }
+        
+        .input-group {
+            margin-bottom: 0;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #2e7d32;
+        }
+        
+        .comparison-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .result-card {
+            background: white;
+            border: 3px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .result-card.current {
+            border-color: #9e9e9e;
+        }
+        
+        .result-card.treehouse {
+            background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.3);
+        }
+        
+        .result-card h3 {
+            font-size: 19px;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+        }
+        
+        .result-card.treehouse h3 {
+            border-bottom-color: rgba(255,255,255,0.3);
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+        
+        .result-card.treehouse .result-item {
+            border-bottom-color: rgba(255,255,255,0.2);
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+            margin-top: 12px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(0,0,0,0.2);
+            font-weight: bold;
+            font-size: 17px;
+        }
+        
+        .result-card.treehouse .result-item:last-child {
+            border-top-color: rgba(255,255,255,0.5);
+        }
+        
+        .result-label {
+            font-size: 13px;
+        }
+        
+        .result-value {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .difference-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 25px;
+            text-align: center;
+        }
+        
+        .difference-box.positive {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .difference-box.negative {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .difference-box h4 {
+            font-size: 17px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .difference-amount {
+            font-size: 38px;
+            font-weight: bold;
+            color: #28a745;
+            margin: 8px 0;
+        }
+        
+        .difference-amount.negative {
+            color: #dc3545;
+        }
+        
+        .difference-details {
+            font-size: 15px;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        .benefits-box {
+            background: #e8f5e9;
+            border-left: 4px solid #2e7d32;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .benefits-box h4 {
+            color: #1b5e20;
+            margin-bottom: 12px;
+            font-size: 17px;
+        }
+        
+        .benefits-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .benefits-box li {
+            color: #424242;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+        
+        .benefits-box li:before {
+            content: "🌳 ";
+            margin-right: 8px;
+        }
+        
+        .experience-selector {
+            background: #fff;
+            border: 2px solid #2e7d32;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .highlight-stat {
+            background: rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 12px;
+            text-align: center;
+        }
+        
+        .highlight-stat h5 {
+            font-size: 12px;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+        
+        .highlight-stat .big-number {
+            font-size: 26px;
+            font-weight: bold;
+        }
+        
+        .info-note {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #1976d2;
+        }
+        
+        .goal-selector-section {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 3px solid #66bb6a;
+        }
+        
+        .goal-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .goal-btn {
+            background: white;
+            border: 3px solid #2e7d32;
+            color: #2e7d32;
+            padding: 15px 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .goal-btn:hover {
+            background: #f1f8e9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+        }
+        
+        .goal-btn.active {
+            background: #2e7d32;
+            color: white;
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+        
+        .goal-message {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            border-left: 5px solid #2e7d32;
+            font-size: 15px;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .goal-message strong {
+            color: #2e7d32;
+        }
+        
+        .goal-highlight {
+            background: #fff9c4;
+            border: 2px solid #fbc02d;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(251, 192, 45, 0); }
+        }
+        
+        .goal-highlight h4 {
+            color: #f57f17;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .goal-highlight p {
+            color: #333;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .goal-buttons {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .goal-btn {
+                font-size: 13px;
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div style="font-size: 60px; margin-bottom: 10px;">🌳</div>
+            <h1>Compensation Calculator</h1>
+            <p>Compare Your Current Position to Treehouse</p>
+        </div>
+        
+        <div class="content">
+            <div class="goal-selector-section">
+                <h2 style="font-size: 22px; color: #2e7d32; margin-bottom: 15px; text-align: center;">
+                    What's Most Important to You?
+                </h2>
+                <div class="goal-buttons">
+                    <button class="goal-btn active" data-goal="less-hours">
+                        ⏰ Work Less Hours
+                    </button>
+                    <button class="goal-btn" data-goal="more-money">
+                        💰 Make More Money
+                    </button>
+                    <button class="goal-btn" data-goal="flexibility">
+                        🎯 Complete Flexibility
+                    </button>
+                    <button class="goal-btn" data-goal="benefits">
+                        🏥 Better Benefits
+                    </button>
+                </div>
+                <div id="goalMessage" class="goal-message">
+                    <strong>Great choice!</strong> See how Treehouse lets you reduce your hours while maintaining income through higher per-hour rates.
+                </div>
+            </div>
+            
+            <h2 class="section-title">Your Current Situation</h2>
+            
+            <div class="input-section">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="currentSalary">Annual Salary ($)</label>
+                        <input type="number" id="currentSalary" value="95000" min="0" step="1000">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="currentHours">Hours/Week</label>
+                        <input type="number" id="currentHours" value="40" min="1" max="80">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="weeksWorked">Weeks/Year</label>
+                        <input type="number" id="weeksWorked" value="48" min="1" max="52">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="currentPTO">PTO Days/Year</label>
+                        <input type="number" id="currentPTO" value="15" min="0" max="30">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="healthInsurance">Employer Pays Health Ins?</label>
+                        <select id="healthInsurance">
+                            <option value="full">Yes - 100%</option>
+                            <option value="partial" selected>Partially</option>
+                            <option value="none">No</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="retirement">401k/403b Match?</label>
+                        <select id="retirement">
+                            <option value="yes">Yes</option>
+                            <option value="no" selected>No</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="ceuAllowance">CEU Allowance/Year ($)</label>
+                        <input type="number" id="ceuAllowance" value="500" min="0" step="100">
+                    </div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Your Treehouse Opportunity</h2>
+            
+            <div class="input-section">
+                <div class="experience-selector">
+                    <label for="experience" style="font-weight: 600; color: #2e7d32; margin-bottom: 8px; display: block; font-size: 14px;">
+                        Years of Experience
+                    </label>
+                    <select id="experience" style="width: 100%; padding: 10px; border: 2px solid #2e7d32; border-radius: 8px; font-size: 15px;">
+                        <option value="45">0 years</option>
+                        <option value="47" selected>2 years</option>
+                        <option value="49">4 years</option>
+                        <option value="51">6 years</option>
+                        <option value="53">8 years</option>
+                        <option value="55">10 years</option>
+                        <option value="60">12 years</option>
+                        <option value="62.50">14 years</option>
+                        <option value="65">16+ years</option>
+                    </select>
+                </div>
+                
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="visitsPerWeek">Treatment Hours per Week</label>
+                        <input type="number" id="visitsPerWeek" value="25" min="1" max="50" step="0.5">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="treehouseWeeks">Weeks You'd Work/Year</label>
+                        <input type="number" id="treehouseWeeks" value="48" min="1" max="52">
+                    </div>
+                </div>
+                
+                <div class="info-note">
+                    💡 <strong>How Pay Works:</strong> 60-79 sessions/mo = $70/hr avg | 80-99 sessions/mo = $77/hr avg | 100+ sessions/mo = $84/hr avg
+                </div>
+                
+                <p style="color: #666; font-size: 13px; margin-top: 12px; font-style: italic;">
+                    💡 112+ treatment hours/month (~28/week) qualifies for 50% health insurance
+                </p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="result-card current">
+                    <h3>💼 Current Position</h3>
+                    <div class="result-item">
+                        <span class="result-label">Annual Salary</span>
+                        <span class="result-value" id="currentAnnual">$95,000</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Health Insurance</span>
+                        <span class="result-value" id="currentHealth">$4,000</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">PTO Value</span>
+                        <span class="result-value" id="currentPTOValue">$2,885</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Retirement</span>
+                        <span class="result-value" id="currentRetirement">$0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">CEU</span>
+                        <span class="result-value" id="currentCEU">$500</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Comp</span>
+                        <span class="result-value" id="currentTotal">$102,385</span>
+                    </div>
+                    
+                    <div class="highlight-stat">
+                        <h5>Hourly Rate</h5>
+                        <div class="big-number" id="currentHourly">$49.42</div>
+                    </div>
+                </div>
+                
+                <div class="result-card treehouse">
+                    <h3>🌳 Treehouse</h3>
+                    <div class="result-item">
+                        <span class="result-label">Pay per Treatment Hour</span>
+                        <span class="result-value" id="treehouseAvgRate">$84/hr</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Treatment Hrs/Year</span>
+                        <span class="result-value" id="treehouseVisits">1,200</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Annual Income</span>
+                        <span class="result-value" id="treehouseGross">$100,800</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Health Ins (if 112+/mo)</span>
+                        <span class="result-value" id="treehouseHealth">$4,000</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">PSLF Value</span>
+                        <span class="result-value" id="pslf">~$50K+</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Value</span>
+                        <span class="result-value" id="treehouseTotal">$104,800</span>
+                    </div>
+                    
+                    <div class="highlight-stat">
+                        <h5>Treatment Hrs/Week</h5>
+                        <div class="big-number" id="visitsWeek">25</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="goalHighlight" class="goal-highlight">
+                <h4>💡 Based on Your Goal: Work Less Hours</h4>
+                <p>At Treehouse, you can work <strong>25 hours/week</strong> and make <strong>$100,800/year</strong> - that's likely MORE than you make now while working FEWER hours!</p>
+            </div>
+            
+            <div class="difference-box" id="differenceBox">
+                <h4>💰 Annual Compensation Difference</h4>
+                <div class="difference-amount" id="differenceAmount">+$0</div>
+                <div class="difference-details" id="differenceDetails"></div>
+            </div>
+            
+            <div class="benefits-box">
+                <h4>🌟 Treehouse Advantages</h4>
+                <ul>
+                    <li><strong>PSLF Eligible:</strong> 501(c)(3) status = Public Service Loan Forgiveness (worth $50K-$100K+!)</li>
+                    <li><strong>Complete Flexibility:</strong> Choose your schedule & treatment hours</li>
+                    <li><strong>Higher Pay with Volume:</strong> More hours = higher average rate</li>
+                    <li><strong>Health Insurance:</strong> 50% covered at 112+ treatment hrs/month</li>
+                    <li><strong>No Productivity Pressure:</strong> You control your workload</li>
+                    <li><strong>Mission-Driven Work:</strong> Make a difference in children's lives</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentGoal = 'less-hours';
+        
+        // Goal messages
+        const goalMessages = {
+            'less-hours': '<strong>Great choice!</strong> See how Treehouse lets you reduce your hours while maintaining income through higher per-hour rates.',
+            'more-money': '<strong>Perfect!</strong> See how Treehouse\'s higher rates and volume bonuses can increase your annual income.',
+            'flexibility': '<strong>Excellent!</strong> At Treehouse, YOU control your schedule - work when you want, as much or as little as you want.',
+            'benefits': '<strong>Smart thinking!</strong> See how PSLF eligibility (worth $50K-$100K+) plus health insurance makes Treehouse competitive.'
+        };
+        
+        // Handle goal button clicks
+        document.querySelectorAll('.goal-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentGoal = this.dataset.goal;
+                document.getElementById('goalMessage').innerHTML = goalMessages[currentGoal];
+                updateCalculations();
+            });
+        });
+        
+        // Pay tiers based on monthly treatment hours
+        function getAveragePayPerHour(visitsPerWeek) {
+            // Calculate monthly visits
+            const monthlyVisits = (visitsPerWeek * 52) / 12;
+            
+            // Apply the EXACT thresholds you specified
+            if (monthlyVisits >= 100) {
+                return 84;  // $84/hr for 100+ sessions/month
+            } else if (monthlyVisits >= 80) {
+                return 77;  // $77/hr for 80-99 sessions/month  
+            } else if (monthlyVisits >= 60) {
+                return 70;  // $70/hr for 60-79 sessions/month
+            } else {
+                // Below 60 sessions/month - use base rate
+                return parseFloat(document.getElementById('experience').value);
+            }
+        }
+        
+        function updateCalculations() {
+            // Current situation
+            const currentSalary = parseFloat(document.getElementById('currentSalary').value) || 0;
+            const currentHours = parseFloat(document.getElementById('currentHours').value) || 40;
+            const weeksWorked = parseFloat(document.getElementById('weeksWorked').value) || 48;
+            const currentPTO = parseFloat(document.getElementById('currentPTO').value) || 0;
+            const healthInsurance = document.getElementById('healthInsurance').value;
+            const retirement = document.getElementById('retirement').value;
+            const ceuAllowance = parseFloat(document.getElementById('ceuAllowance').value) || 0;
+            
+            // Treehouse
+            const baseRate = parseFloat(document.getElementById('experience').value);
+            const visitsPerWeek = parseFloat(document.getElementById('visitsPerWeek').value) || 20;
+            const treehouseWeeks = parseFloat(document.getElementById('treehouseWeeks').value) || 48;
+            
+            // Calculate current
+            const totalHoursWorked = currentHours * weeksWorked;
+            const currentHourlyRate = currentSalary / totalHoursWorked;
+            const ptoHours = (currentPTO / 5) * currentHours;
+            const ptoValue = ptoHours * currentHourlyRate;
+            
+            let healthValue = 0;
+            if (healthInsurance === 'full') healthValue = 8000;
+            else if (healthInsurance === 'partial') healthValue = 4000;
+            
+            const retirementValue = retirement === 'yes' ? currentSalary * 0.03 : 0;
+            const currentTotalComp = currentSalary + healthValue + ptoValue + retirementValue + ceuAllowance;
+            
+            // Calculate Treehouse with EXACT pay tiers
+            const annualVisits = visitsPerWeek * treehouseWeeks;
+            const monthlyVisits = annualVisits / 12;
+            const actualAvgPayPerVisit = getAveragePayPerHour(visitsPerWeek);
+            const treehouseGross = annualVisits * actualAvgPayPerVisit;
+            const treehouseHealthValue = monthlyVisits >= 112 ? 4000 : 0;
+            const treehouseTotal = treehouseGross + treehouseHealthValue;
+            
+            // Update displays
+            document.getElementById('currentAnnual').textContent = `$${currentSalary.toLocaleString()}`;
+            document.getElementById('currentHealth').textContent = `$${healthValue.toLocaleString()}`;
+            document.getElementById('currentPTOValue').textContent = `$${Math.round(ptoValue).toLocaleString()}`;
+            document.getElementById('currentRetirement').textContent = `$${Math.round(retirementValue).toLocaleString()}`;
+            document.getElementById('currentCEU').textContent = `$${ceuAllowance.toLocaleString()}`;
+            document.getElementById('currentTotal').textContent = `$${Math.round(currentTotalComp).toLocaleString()}`;
+            document.getElementById('currentHourly').textContent = `$${currentHourlyRate.toFixed(2)}`;
+            
+            document.getElementById('treehouseAvgRate').textContent = `$${actualAvgPayPerVisit.toFixed(2)}/hr`;
+            document.getElementById('treehouseVisits').textContent = Math.round(annualVisits).toLocaleString();
+            document.getElementById('treehouseGross').textContent = `$${Math.round(treehouseGross).toLocaleString()}`;
+            document.getElementById('treehouseHealth').textContent = treehouseHealthValue > 0 ? `$${treehouseHealthValue.toLocaleString()}` : '$0';
+            document.getElementById('treehouseTotal').textContent = `$${Math.round(treehouseTotal).toLocaleString()}`;
+            document.getElementById('visitsWeek').textContent = visitsPerWeek;
+            
+            // Difference
+            const difference = treehouseTotal - currentTotalComp;
+            const diffBox = document.getElementById('differenceBox');
+            const diffAmount = document.getElementById('differenceAmount');
+            const diffDetails = document.getElementById('differenceDetails');
+            
+            diffAmount.textContent = (difference >= 0 ? '+' : '') + `$${Math.round(Math.abs(difference)).toLocaleString()}`;
+            
+            if (difference > 0) {
+                diffBox.className = 'difference-box positive';
+                diffAmount.className = 'difference-amount';
+                diffDetails.textContent = `Treehouse offers $${Math.round(Math.abs(difference)).toLocaleString()} MORE per year with complete flexibility!`;
+            } else if (difference < 0) {
+                diffBox.className = 'difference-box negative';
+                diffAmount.className = 'difference-amount negative';
+                diffDetails.textContent = `$${Math.round(Math.abs(difference)).toLocaleString()} less in direct comp, BUT you get PSLF (worth $50K-$100K+) plus complete flexibility!`;
+            } else {
+                diffBox.className = 'difference-box';
+                diffAmount.className = 'difference-amount';
+                diffDetails.textContent = 'Similar comp, but Treehouse offers PSLF eligibility and complete flexibility!';
+            }
+            
+            // Update goal-based highlight
+            updateGoalHighlight(currentGoal, visitsPerWeek, annualVisits, treehouseGross, currentHours, currentSalary, treehouseTotal, currentTotalComp, monthlyVisits);
+        }
+        
+        function updateGoalHighlight(goal, visitsPerWeek, annualVisits, treehouseGross, currentHours, currentSalary, treehouseTotal, currentTotalComp, monthlyVisits) {
+            const highlightBox = document.getElementById('goalHighlight');
+            let html = '';
+            
+            if (goal === 'less-hours') {
+                const hoursSaved = currentHours - visitsPerWeek;
+                const percentLess = Math.round((hoursSaved / currentHours) * 100);
+                
+                if (hoursSaved > 0) {
+                    html = `
+                        <h4>💡 Work ${Math.round(hoursSaved)} Fewer Hours per Week!</h4>
+                        <p>You're currently working <strong>${currentHours} hours/week</strong>. At Treehouse with <strong>${visitsPerWeek} treatment hours/week</strong>, that's <strong>${percentLess}% less time working</strong> while earning <strong>$${Math.round(treehouseGross).toLocaleString()}/year</strong>!</p>
+                    `;
+                } else {
+                    html = `
+                        <h4>💡 Maximize Your Earnings Per Hour!</h4>
+                        <p>Even working similar hours, Treehouse pays <strong>$${getAveragePayPerHour(visitsPerWeek)}/hour</strong> for treatment time - potentially more per hour than your current position!</p>
+                    `;
+                }
+            } else if (goal === 'more-money') {
+                const extraIncome = treehouseTotal - currentTotalComp;
+                
+                if (extraIncome > 0) {
+                    html = `
+                        <h4>💰 Earn $${Math.round(extraIncome).toLocaleString()} More Per Year!</h4>
+                        <p>At <strong>${visitsPerWeek} treatment hours/week</strong>, you'd make <strong>$${Math.round(treehouseTotal).toLocaleString()}/year</strong> - that's <strong>$${Math.round(extraIncome).toLocaleString()} MORE</strong> than your current <strong>$${Math.round(currentTotalComp).toLocaleString()}</strong>!</p>
+                    `;
+                } else {
+                    html = `
+                        <h4>💰 Increase Your Hours to Boost Income!</h4>
+                        <p>Try increasing your treatment hours per week! At <strong>100+ hours/month</strong>, you earn <strong>$84/hour</strong>. Plus, PSLF saves you an additional <strong>$50K-$100K+</strong> in student loans!</p>
+                    `;
+                }
+            } else if (goal === 'flexibility') {
+                html = `
+                    <h4>🎯 Complete Schedule Control!</h4>
+                    <p>Want to work <strong>${visitsPerWeek} hours/week</strong>? Done. Want to change it next month? Your choice! No productivity quotas, no required hours - YOU decide your schedule and workload completely.</p>
+                `;
+            } else if (goal === 'benefits') {
+                const pslf = 75000; // Estimate
+                const totalValue = treehouseTotal + pslf;
+                
+                html = `
+                    <h4>🏥 PSLF + Health Insurance = Massive Value!</h4>
+                    <p><strong>PSLF eligibility alone</strong> is worth ~$50K-$100K+ over 10 years. Add <strong>${monthlyVisits >= 112 ? '$4,000' : '$0'} health insurance</strong> ${monthlyVisits >= 112 ? '' : '(at 112+ hrs/month)'}, and your total compensation package is incredibly competitive!</p>
+                `;
+            }
+            
+            highlightBox.innerHTML = html;
+        }
+        
+        // Event listeners
+        ['currentSalary', 'currentHours', 'weeksWorked', 'currentPTO', 'healthInsurance', 
+         'retirement', 'ceuAllowance', 'experience', 'visitsPerWeek', 'treehouseWeeks'].forEach(id => {
+            const el = document.getElementById(id);
+            el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', updateCalculations);
+        });
+        
+        updateCalculations();
+    </script>
+</body>
+</html>
